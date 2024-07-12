@@ -97,9 +97,20 @@ public class CamelRouteConfiguration extends RouteBuilder {
     ;
     
     /*
+     * Ensures a single worker at a time.
+    */
+    from("seda:singletonWorker?blockWhenFull=true&size=1&purgeWhenStopping=true")
+      .routingSlip().header(ApplicationHeaders.SINGLETON_WORKER_URI)
+    ;
+    
+    /*
      * Batch ingest from the embedded JSON file.
     */
     from("timer:embeddedIngest?repeatCount=1").routeId("embeddedIngest").autoStartup(false)
+      .setHeader(ApplicationHeaders.SINGLETON_WORKER_URI).constant("direct:embeddedIngest")
+      .to("seda:singletonWorker")
+    ;
+    from("direct:embeddedIngest")
       .log(LoggingLevel.INFO, log, "Loading embedded: key='classpath:data/company-overview.json'")
       .to("language:constant:resource:classpath:data/company-overview.json")
       .unmarshal().json(JsonLibrary.Jackson, List.class)
@@ -119,6 +130,10 @@ public class CamelRouteConfiguration extends RouteBuilder {
            config.file().watchPeriod(),
            (config.file().watch())?0:1
          ).routeId("fileIngest").autoStartup(false)
+      .setHeader(ApplicationHeaders.SINGLETON_WORKER_URI).constant("direct:fileIngest")
+      .to("seda:singletonWorker")
+    ;
+    from("direct:fileIngest")
       .log(LoggingLevel.DEBUG, log, String.format("Picked up file: name='${header.%s}'", Exchange.FILE_NAME))
       .unmarshal().json(JsonLibrary.Jackson, List.class)
       .enrich().constant("direct:calculateDeterministicHash").aggregationStrategy("deterministicHashHeaderEnrichmentStrategy").end()
@@ -165,6 +180,10 @@ public class CamelRouteConfiguration extends RouteBuilder {
             (config.s3().watch())?0:1,
             config.s3().watchPeriod()
          ).routeId("s3Ingest").autoStartup(false)
+      .setHeader(ApplicationHeaders.SINGLETON_WORKER_URI).constant("direct:s3Ingest")
+      .to("seda:singletonWorker")
+    ;
+    from("direct:s3Ingest")
       .log(LoggingLevel.DEBUG, log, String.format("Checking S3 should download: key='${header.%s}', s3hash='${header.%s}'", AWS2S3Constants.KEY, AWS2S3Constants.E_TAG))
       .idempotentConsumer().header(AWS2S3Constants.E_TAG).idempotentRepository("batchIngestHashIdempotentRepository")
         .log(LoggingLevel.DEBUG, log, String.format("Downloading S3: key='${header.%s}', s3hash='${header.%s}'", AWS2S3Constants.KEY, AWS2S3Constants.E_TAG))
@@ -245,6 +264,10 @@ public class CamelRouteConfiguration extends RouteBuilder {
       .to("seda:poller")
     ;
     from("seda:poller?discardWhenFull=true&size=1")
+      .setHeader(ApplicationHeaders.SINGLETON_WORKER_URI).constant("direct:poller")
+      .to("seda:singletonWorker")
+    ;
+    from("direct:poller")
       .split().constant(config.poller().symbols())
         .log(LoggingLevel.INFO, log, "Fetching company overview: symbol='${body}'")
         .setHeader(ApplicationHeaders.STOCK_SYMBOL).body()
@@ -262,7 +285,7 @@ public class CamelRouteConfiguration extends RouteBuilder {
      * Invoke the Alpha Vantage API (throttled).
     */
     from("direct:fetchCompanyOverview")
-      .throttle(config.poller().throttleRequests()).timePeriodMillis(config.poller().throttleRequests())
+      .throttle(config.alphaVantage().throttleRequests()).timePeriodMillis(config.alphaVantage().throttleRequests())
       .setHeader(Exchange.HTTP_QUERY, simple(String.format("function=%s&symbol=${header.%s}&apikey=%s", config.alphaVantage().function().toUpperCase(), ApplicationHeaders.STOCK_SYMBOL, config.alphaVantage().apiKey())))
       .toF("%s://%s:%s/%s?followRedirects=true", config.alphaVantage().scheme(), config.alphaVantage().host(), config.alphaVantage().port(), config.alphaVantage().path())
       .unmarshal().json(JsonLibrary.Jackson, Map.class)
@@ -280,6 +303,7 @@ public class CamelRouteConfiguration extends RouteBuilder {
      * Insert or update a company overview into Weaviate.
     */
     from("direct:upsertCompanyOverviewToWeaviate")
+      .throttle(config.weaviate().throttleRequests()).timePeriodMillis(config.weaviate().throttleRequests())
       .setHeader(ApplicationHeaders.WEAVIATE_ID).method("weaviateHelper", String.format("calculateDeterministicUUID(${headers.%s})", ApplicationHeaders.STOCK_SYMBOL))
       .transform().method("weaviateHelper", "convertToWeaviateProperties(${body})")
       //.log(LoggingLevel.INFO, log, String.format("Upserting object to weaviate: symbol='${header.%s}', id='${headers.%s}'", ApplicationHeaders.STOCK_SYMBOL, ApplicationHeaders.WEAVIATE_ID))

@@ -39,9 +39,7 @@ public record ApplicationConfiguration(
   public record Poller(
     boolean enabled,
     Set<String> symbols,
-    long period,
-    long throttleRequests,
-    long throttlePeriod) {
+    long period) {
 
   }
 
@@ -72,7 +70,9 @@ public record ApplicationConfiguration(
     int port,
     String path,
     String function,
-    String apiKey) {
+    String apiKey,
+    long throttleRequests,
+    long throttlePeriod) {
 
   }
 
@@ -86,7 +86,9 @@ public record ApplicationConfiguration(
     String openAiApiKey,
     String huggingfaceApiKey,
     String weaviateApiKey,
-    boolean initializeSchema) {
+    boolean initializeSchema,
+    long throttleRequests,
+    long throttlePeriod) {
 
   }
 }

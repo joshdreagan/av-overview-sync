@@ -18,4 +18,5 @@ public final class ApplicationHeaders {
   public static final String DETERMINISTIC_HASH = "DeterministicHash";
   public static final String STOCK_SYMBOL = "StockSymbol";
   public static final String WEAVIATE_ID = "WeaviateID";
+  public static final String SINGLETON_WORKER_URI = "SingletonWorkerURI";
 }

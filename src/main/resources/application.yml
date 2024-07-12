@@ -18,8 +18,6 @@ application:
     symbols:
       - "IBM"
     period: 86400000
-    throttle-requests: 1
-    throttle-period: 1000
   file:
     directory: "target/batch"
     file-name: "company-overview.json"
@@ -42,6 +40,8 @@ application:
     path: "query"
     function: "OVERVIEW"
     api-key: "demo"
+    throttle-requests: 1
+    throttle-period: 1000
   weaviate:
     scheme: "http"
     host: "localhost"
@@ -53,3 +53,5 @@ application:
     openai-api-key: "<openai-api-key>"
     huggingface-api-key: "<huggingface-api-key>"
     initialize-schema: true
+    throttle-requests: 1
+    throttle-period: 1000
