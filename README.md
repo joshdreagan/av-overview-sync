@@ -7,7 +7,7 @@ This application can be used to synchronize the company information from the Alp
 - An Alpha Vantage API key
   - You can use the default API key "demo", but it will only give you access to the company information for the "IBM" stock symbol.
 - A Weaviate API key
-  - If running a local Weaviate instance, you can use and empty "" API key.
+  - If running a local Weaviate instance, you can use an empty "" API key.
 - An OpenAI API key
 - A Huggingface API key
 
@@ -19,7 +19,7 @@ If you'd like, you can run a Weaviate instance locally using podman/docker
 podman run --name weaviate -p 8000:8080 -p 50051:50051 -e ENABLE_MODULES="text2vec-cohere,text2vec-huggingface,text2vec-palm,text2vec-openai,generative-openai,generative-cohere,generative-palm,ref2vec-centroid,reranker-cohere,qna-openai" semitechnologies/weaviate:1.25.7
 ```
 
-You can override any of the application configurations by creating an `application.yml` file in the `$PROJECT_ROOT/config` directory.
+You can override any of the application configurations by creating an `application.yml` file in the `$PROJECT_ROOT/config` directory. This directory is ignored by Git to prevent checking in personal/user keys or other secrets.
 
 To run the application, you can use the following commands:
 
@@ -30,7 +30,7 @@ mvn clean package spring-boot:run
 
 ## Running on OpenShift
 
-Make sure to update the values in the `configmap.yml` and `secret.yml` files. Which are located in the `$PROJECT_ROOT/src/main/jkube` directory.
+Make sure to update the values in the `configmap.yml` and `secret.yml` files. Which are located in the `$PROJECT_ROOT/src/main/jkube` directory. These files are ignored by Git to prevent checking in personal/user keys or other secrets.
 
 ```
 cd $PROJECT_ROOT
