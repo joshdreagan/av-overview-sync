@@ -34,8 +34,8 @@ Create the `configmap.yml` and `secret.yml` files from the available templates, 
 
 ```
 cd $PROJECT_ROOT
-cp $PROJECT_ROOT/src/main/jkube/configmap.yml.template $PROJECT_ROOT/src/main/jkube/configmap.yml
-cp $PROJECT_ROOT/src/main/jkube/secret.yml.template $PROJECT_ROOT/src/main/jkube/secret.yml
+cp src/main/jkube/configmap.yml.template src/main/jkube/configmap.yml
+cp src/main/jkube/secret.yml.template src/main/jkube/secret.yml
 ```
 
 Build and deploy to OpenShift.
