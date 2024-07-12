@@ -7,7 +7,7 @@ management:
   endpoints.web.exposure.include: info,health,camelroutes
 
 camel:
-  springboot.name: ${project.name}
+  springboot.name: av-overview-sync
 
 application:
   batch-ingest: 
@@ -49,7 +49,7 @@ application:
     grpc-secured: false
     grpc-host: "localhost"
     grpc-port: 50051
-    weaviate-api-key: "<weaviate-api-key>"
+    api-key: "<api-key>"
     openai-api-key: "<openai-api-key>"
     huggingface-api-key: "<huggingface-api-key>"
     initialize-schema: true

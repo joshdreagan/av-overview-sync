@@ -1,0 +1,13 @@
+metadata:
+  name: ${project.artifactId}-configmap
+data:
+  application.yml: |-
+    application:
+      poller:
+        symbols:
+          - "IBM"
+      weaviate:
+        host: "weaviate.weaviate"
+        port: 80
+        grpc-host: "weaviate-grpc.weaviate"
+        grpc-port: 50051

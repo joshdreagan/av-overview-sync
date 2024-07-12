@@ -1,0 +1,51 @@
+spec:
+  template:
+    spec:
+      containers:
+      - name: ${project.artifactId}
+        env:
+        - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+          value: file:/etc/config/
+        - name: APPLICATION_S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${project.artifactId}-secret
+              key: application.s3.access-key
+        - name: APPLICATION_S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${project.artifactId}-secret
+              key: application.s3.secret-key
+        - name: APPLICATION_ALPHA_VANTAGE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${project.artifactId}-secret
+              key: application.alpha-vantage.api-key
+        - name: APPLICATION_WEAVIATE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${project.artifactId}-secret
+              key: application.weaviate.api-key
+        - name: APPLICATION_WEAVIATE_OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${project.artifactId}-secret
+              key: application.weaviate.openai-api-key
+        - name: APPLICATION_WEAVIATE_HUGGINGFACE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${project.artifactId}-secret
+              key: application.weaviate.huggingface-api-key
+        resources:
+          requests:
+            cpu: "1.0"
+          limits:
+            cpu: "4.0"
+        volumeMounts:
+        - name: ${project.artifactId}-configmap-vol
+          mountPath: /etc/config
+          readOnly: true
+      volumes:
+      - name: ${project.artifactId}-configmap-vol
+        configMap:
+          name: ${project.artifactId}-configmap

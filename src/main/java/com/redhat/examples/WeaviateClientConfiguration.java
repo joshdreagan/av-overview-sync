@@ -39,6 +39,6 @@ public class WeaviateClientConfiguration {
     );
     weaviateConfig.setGRPCSecured(config.weaviate().grpcSecured());
     weaviateConfig.setGRPCHost(String.format("%s:%d", config.weaviate().grpcHost(), config.weaviate().grpcPort()));
-    return WeaviateAuthClient.apiKey(weaviateConfig, config.weaviate().weaviateApiKey());
+    return WeaviateAuthClient.apiKey(weaviateConfig, config.weaviate().apiKey());
   }
 }

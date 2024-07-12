@@ -306,8 +306,8 @@ public class CamelRouteConfiguration extends RouteBuilder {
       .throttle(config.weaviate().throttleRequests()).timePeriodMillis(config.weaviate().throttleRequests())
       .setHeader(ApplicationHeaders.WEAVIATE_ID).method("weaviateHelper", String.format("calculateDeterministicUUID(${headers.%s})", ApplicationHeaders.STOCK_SYMBOL))
       .transform().method("weaviateHelper", "convertToWeaviateProperties(${body})")
-      //.log(LoggingLevel.INFO, log, String.format("Upserting object to weaviate: symbol='${header.%s}', id='${headers.%s}'", ApplicationHeaders.STOCK_SYMBOL, ApplicationHeaders.WEAVIATE_ID))
-      //.process("upsertWeaviateObjectProcessor")
+      .log(LoggingLevel.INFO, log, String.format("Upserting object to weaviate: symbol='${header.%s}', id='${headers.%s}'", ApplicationHeaders.STOCK_SYMBOL, ApplicationHeaders.WEAVIATE_ID))
+      .process("upsertWeaviateObjectProcessor")
     ;
   }
 }

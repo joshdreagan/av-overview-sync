@@ -168,6 +168,9 @@
   <profiles>
     <profile>
       <id>openshift</id>
+      <properties>
+        <jkube.openshift.generateRoute>false</jkube.openshift.generateRoute>
+      </properties>
       <build>
         <defaultGoal>install</defaultGoal>
         <plugins>
@@ -180,8 +183,10 @@
                 <goals>
                   <goal>resource</goal>
                   <goal>build</goal>
-                  <goal>apply</goal>
                 </goals>
+                <configuration>>
+                  <generateRoute>false</generateRoute>
+                </configuration>
               </execution>
             </executions>
           </plugin>

@@ -83,9 +83,9 @@ public record ApplicationConfiguration(
     boolean grpcSecured,
     String grpcHost,
     int grpcPort,
+    String apiKey,
     String openAiApiKey,
     String huggingfaceApiKey,
-    String weaviateApiKey,
     boolean initializeSchema,
     long throttleRequests,
     long throttlePeriod) {
