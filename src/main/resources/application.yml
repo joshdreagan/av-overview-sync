@@ -1,0 +1,55 @@
+management:
+  endpoint:
+    health.enabled: true
+    camelroutes:
+      enabled: true
+      read-only: true
+  endpoints.web.exposure.include: info,health,camelroutes
+
+camel:
+  springboot.name: ${project.name}
+
+application:
+  batch-ingest: 
+    enabled: true
+    type: EMBEDDED
+  poller:
+    enabled: true
+    symbols:
+      - "IBM"
+    period: 86400000
+    throttle-requests: 1
+    throttle-period: 1000
+  file:
+    directory: "target/batch"
+    file-name: "company-overview.json"
+    watch: false
+    watch-period: 30000
+    update: false
+  s3:
+    access-key: "<access-key>"
+    secret-key: "<secret-key>"
+    bucket-name: "default"
+    region-name: "us-east-1"
+    file-name: "company-overview.json"
+    watch: false
+    watch-period: 30000
+    update: false
+  alpha-vantage:
+    scheme: "https"
+    host: "www.alphavantage.co"
+    port: 443
+    path: "query"
+    function: "OVERVIEW"
+    api-key: "demo"
+  weaviate:
+    scheme: "http"
+    host: "localhost"
+    port: 8000
+    grpc-secured: false
+    grpc-host: "localhost"
+    grpc-port: 50051
+    weaviate-api-key: "<weaviate-api-key>"
+    openai-api-key: "<openai-api-key>"
+    huggingface-api-key: "<huggingface-api-key>"
+    initialize-schema: true
