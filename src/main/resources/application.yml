@@ -13,11 +13,6 @@ application:
   batch-ingest: 
     enabled: true
     type: EMBEDDED
-  poller:
-    enabled: true
-    symbols:
-      - "IBM"
-    period: 86400000
   file:
     directory: "target/batch"
     file-name: "company-overview.json"
@@ -33,6 +28,11 @@ application:
     watch: false
     watch-period: 30000
     update: false
+  poller:
+    enabled: true
+    symbols:
+      - "IBM"
+    period: 86400000
   alpha-vantage:
     scheme: "https"
     host: "www.alphavantage.co"

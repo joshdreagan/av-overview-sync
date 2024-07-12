@@ -19,9 +19,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application")
 public record ApplicationConfiguration(
   BatchIngest batchIngest,
-  Poller poller,
   File file,
   S3 s3,
+  Poller poller,
   AlphaVantage alphaVantage,
   Weaviate weaviate) {
 
