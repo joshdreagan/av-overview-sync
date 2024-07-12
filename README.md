@@ -30,7 +30,15 @@ mvn clean package spring-boot:run
 
 ## Running on OpenShift
 
-Make sure to update the values in the `configmap.yml` and `secret.yml` files. Which are located in the `$PROJECT_ROOT/src/main/jkube` directory. These files are ignored by Git to prevent checking in personal/user keys or other secrets.
+Create the `configmap.yml` and `secret.yml` files from the available templates, and update them with your values. These files are ignored by Git to prevent checking in personal/user keys or other secrets.
+
+```
+cd $PROJECT_ROOT
+cp $PROJECT_ROOT/src/main/jkube/configmap.yml.template $PROJECT_ROOT/src/main/jkube/configmap.yml
+cp $PROJECT_ROOT/src/main/jkube/secret.yml.template $PROJECT_ROOT/src/main/jkube/secret.yml
+```
+
+Build and deploy to OpenShift.
 
 ```
 cd $PROJECT_ROOT
