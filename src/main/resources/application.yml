@@ -40,6 +40,7 @@ application:
     path: "query"
     function: "OVERVIEW"
     api-key: "demo"
+    throttle-enabled: true
     throttle-requests: 1
     throttle-period: 1000
   weaviate:
@@ -53,5 +54,6 @@ application:
     openai-api-key: "<openai-api-key>"
     huggingface-api-key: "<huggingface-api-key>"
     initialize-schema: true
+    throttle-enabled: true
     throttle-requests: 1
     throttle-period: 1000

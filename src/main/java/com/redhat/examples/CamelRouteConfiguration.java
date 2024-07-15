@@ -43,7 +43,7 @@ public class CamelRouteConfiguration extends RouteBuilder {
   
   @Autowired
   WeaviateHelper weaviateHelper;
-  
+
   @Bean
   IdempotentRepository batchIngestHashIdempotentRepository() {
     return new MemoryIdempotentRepository();
@@ -235,9 +235,9 @@ public class CamelRouteConfiguration extends RouteBuilder {
     */
     from("direct:updateBatchIngestFile")
       .choice()
-        .when().constant(config.batchIngest().type() == FILE && config.file().update())
+        .when().constant(config.batchIngest().enabled() && config.batchIngest().type() == FILE && config.file().update())
           .to("direct:updateFileBatchIngestFile")
-        .when().constant(config.batchIngest().type() == S3 && config.s3().update())
+        .when().constant(config.batchIngest().enabled() && config.batchIngest().type() == S3 && config.s3().update())
           .to("direct:updateS3BatchIngestFile")
       .end()
     ;
@@ -285,16 +285,21 @@ public class CamelRouteConfiguration extends RouteBuilder {
      * Invoke the Alpha Vantage API (throttled).
     */
     from("direct:fetchCompanyOverview")
-      .throttle(config.alphaVantage().throttleRequests()).timePeriodMillis(config.alphaVantage().throttleRequests())
+      .throttle(config.alphaVantage().throttleRequests()).timePeriodMillis(config.alphaVantage().throttleRequests()).disabled(!config.alphaVantage().throttleEnabled())
       .setHeader(Exchange.HTTP_QUERY, simple(String.format("function=%s&symbol=${header.%s}&apikey=%s", config.alphaVantage().function().toUpperCase(), ApplicationHeaders.STOCK_SYMBOL, config.alphaVantage().apiKey())))
       .toF("%s://%s:%s/%s?followRedirects=true", config.alphaVantage().scheme(), config.alphaVantage().host(), config.alphaVantage().port(), config.alphaVantage().path())
+      .log(LoggingLevel.DEBUG, log, String.format("Alpha Vantage response: symbol='${header.%s}', response='${body}'", ApplicationHeaders.STOCK_SYMBOL))
       .unmarshal().json(JsonLibrary.Jackson, Map.class)
       .filter().simple("${body} == ${null} || ${body.isEmpty()}")
-        .log(LoggingLevel.INFO, log, String.format("Unable to fetch company overview: symbol='${header.%s}', message='Empty/null response returned from Alpha Advantage API.'", ApplicationHeaders.STOCK_SYMBOL))
+        .log(LoggingLevel.WARN, log, String.format("Unable to fetch company overview: symbol='${header.%s}', message='Empty/null response returned from Alpha Advantage API.'", ApplicationHeaders.STOCK_SYMBOL))
         .stop()
       .end()
       .filter().simple("${body.containsKey('Error Message')}")
-        .log(LoggingLevel.INFO, log, String.format("Unable to fetch company overview: symbol='${header.%s}', message='${body['Error Message']}'", ApplicationHeaders.STOCK_SYMBOL))
+        .log(LoggingLevel.WARN, log, String.format("Unable to fetch company overview: symbol='${header.%s}', message='${body['Error Message']}'", ApplicationHeaders.STOCK_SYMBOL))
+        .stop()
+      .end()
+      .filter().simple("${body.containsKey('Information')}")
+        .log(LoggingLevel.WARN, log, String.format("Unable to fetch company overview: symbol='${header.%s}', message='${body['Information']}'", ApplicationHeaders.STOCK_SYMBOL))
         .stop()
       .end()
     ;
@@ -303,9 +308,9 @@ public class CamelRouteConfiguration extends RouteBuilder {
      * Insert or update a company overview into Weaviate.
     */
     from("direct:upsertCompanyOverviewToWeaviate")
-      .throttle(config.weaviate().throttleRequests()).timePeriodMillis(config.weaviate().throttleRequests())
-      .setHeader(ApplicationHeaders.WEAVIATE_ID).method("weaviateHelper", String.format("calculateDeterministicUUID(${headers.%s})", ApplicationHeaders.STOCK_SYMBOL))
-      .transform().method("weaviateHelper", "convertToWeaviateProperties(${body})")
+      .throttle(config.weaviate().throttleRequests()).timePeriodMillis(config.weaviate().throttleRequests()).disabled(!config.weaviate().throttleEnabled())
+      .setHeader(ApplicationHeaders.WEAVIATE_ID).method(weaviateHelper, String.format("calculateDeterministicUUID(${headers.%s})", ApplicationHeaders.STOCK_SYMBOL))
+      .transform().method(weaviateHelper, "convertToWeaviateProperties(${body})")
       .log(LoggingLevel.INFO, log, String.format("Upserting object to weaviate: symbol='${header.%s}', id='${headers.%s}'", ApplicationHeaders.STOCK_SYMBOL, ApplicationHeaders.WEAVIATE_ID))
       .process("upsertWeaviateObjectProcessor")
     ;

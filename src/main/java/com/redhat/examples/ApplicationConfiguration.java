@@ -71,6 +71,7 @@ public record ApplicationConfiguration(
     String path,
     String function,
     String apiKey,
+    boolean throttleEnabled,
     long throttleRequests,
     long throttlePeriod) {
 
@@ -87,6 +88,7 @@ public record ApplicationConfiguration(
     String openAiApiKey,
     String huggingfaceApiKey,
     boolean initializeSchema,
+    boolean throttleEnabled,
     long throttleRequests,
     long throttlePeriod) {
 

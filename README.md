@@ -73,6 +73,7 @@ mvn -P openshift clean package oc:deploy
 | `application.alpha-vantage.path` | "query" | The path for the Alpha Vantage API.
 | `application.alpha-vantage.function` | "OVERVIEW" | The function for the Alpha Vantage API. Supported values are "OVERVIEW".
 | `application.alpha-vantage.api-key` | "demo" | The API key for the Alpha Vantage API. The default "demo" key only gives access to the "IBM" stock symbol.
+| `application.alpha-vantage.throttle-enabled` | `true` | Should requests to the Alpha Vantage API be throttled.
 | `application.alpha-vantage.throttle-requests` | `1` | The number of requests per-period allowed to the Alpha Vantage API.
 | `application.alpha-vantage.throttle-period` | `1000` | The period (in milliseconds) for which to throttle requests to the Alpha Vantage API.
 | `application.weaviate.scheme` | "http" | The scheme for the Weaviate VectorDB. Valid values are "http" or "https".
@@ -85,5 +86,6 @@ mvn -P openshift clean package oc:deploy
 | `application.weaviate.openai-api-key` |  | Your OpenAI API key to use for the "generative-openai" generative query processor.
 | `application.weaviate.huggingface-api-key` |  | Your Huggingface API key to use for the "text2vec_huggingface" vectorizer.
 | `application.weaviate.initialize-schema` | `true` | Should this app initialize the schema in the Weaviate VectorDB on startup. If enabled, this will create a schema only if one doesn't already exist.
+| `application.weaviate.throttle-enabled` | `true` | Should requests to the Weaviate VectorDB be throttled.
 | `application.weaviate.throttle-requests` | `1` | The number of requests per-period allowed to the Weaviate VectorDB.
 | `application.weaviate.throttle-period` | `1000` | The period (in milliseconds) for which to throttle requests to the Weaviate VectorDB.
