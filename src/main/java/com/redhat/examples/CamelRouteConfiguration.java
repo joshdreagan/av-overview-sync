@@ -175,8 +175,8 @@ public class CamelRouteConfiguration extends RouteBuilder {
             config.s3().bucketName(), 
             config.s3().regionName(),
             config.s3().fileName(),
-            config.s3().accessKey(),
-            config.s3().secretKey(),
+            (config.s3().accessKey() == null || config.s3().accessKey().isBlank()) ? "<access_key>" : config.s3().accessKey(),
+            (config.s3().secretKey() == null || config.s3().secretKey().isBlank()) ? "<scret_key>" : config.s3().secretKey(),
             (config.s3().watch())?0:1,
             config.s3().watchPeriod()
          ).routeId("s3Ingest").autoStartup(false)
@@ -220,8 +220,8 @@ public class CamelRouteConfiguration extends RouteBuilder {
             config.s3().bucketName(), 
             config.s3().regionName(),
             config.s3().fileName(),
-            config.s3().accessKey(),
-            config.s3().secretKey()
+            (config.s3().accessKey() == null || config.s3().accessKey().isBlank()) ? "<access_key>" : config.s3().accessKey(),
+            (config.s3().secretKey() == null || config.s3().secretKey().isBlank()) ? "<scret_key>" : config.s3().secretKey()
           )
           .idempotentConsumer().header(AWS2S3Constants.E_TAG).idempotentRepository("batchIngestHashIdempotentRepository")
             .log(LoggingLevel.INFO, log, String.format("Adding updated S3 hash: key='${header.%s}', s3hash='${header.%s}'", AWS2S3Constants.KEY, AWS2S3Constants.E_TAG))
@@ -286,7 +286,15 @@ public class CamelRouteConfiguration extends RouteBuilder {
     */
     from("direct:fetchCompanyOverview")
       .throttle(config.alphaVantage().throttleRequests()).timePeriodMillis(config.alphaVantage().throttleRequests()).disabled(!config.alphaVantage().throttleEnabled())
-      .setHeader(Exchange.HTTP_QUERY, simple(String.format("function=%s&symbol=${header.%s}&apikey=%s", config.alphaVantage().function().toUpperCase(), ApplicationHeaders.STOCK_SYMBOL, config.alphaVantage().apiKey())))
+      .setHeader(Exchange.HTTP_QUERY)
+        .simple(
+          String.format(
+            "function=%s&symbol=${header.%s}&apikey=%s", 
+            config.alphaVantage().function().toUpperCase(), 
+            ApplicationHeaders.STOCK_SYMBOL, 
+            (config.alphaVantage().apiKey() == null || config.alphaVantage().apiKey().isBlank()) ? "demo" : config.alphaVantage().apiKey()
+          )
+        )
       .toF("%s://%s:%s/%s?followRedirects=true", config.alphaVantage().scheme(), config.alphaVantage().host(), config.alphaVantage().port(), config.alphaVantage().path())
       .log(LoggingLevel.DEBUG, log, String.format("Alpha Vantage response: symbol='${header.%s}', response='${body}'", ApplicationHeaders.STOCK_SYMBOL))
       .unmarshal().json(JsonLibrary.Jackson, Map.class)

@@ -34,11 +34,11 @@ public class WeaviateClientConfiguration {
       config.weaviate().scheme(),
       String.format("%s:%d", config.weaviate().host(), config.weaviate().port()),
       Map.of(
-        "X-OpenAI-Api-key", config.weaviate().openAiApiKey(),
-        "X-Huggingface-Api-key", config.weaviate().huggingfaceApiKey())
+        "X-OpenAI-Api-key", (config.weaviate().openAiApiKey() == null) ? "" : config.weaviate().openAiApiKey(),
+        "X-Huggingface-Api-key", (config.weaviate().huggingfaceApiKey() == null) ? "" : config.weaviate().huggingfaceApiKey())
     );
     weaviateConfig.setGRPCSecured(config.weaviate().grpcSecured());
     weaviateConfig.setGRPCHost(String.format("%s:%d", config.weaviate().grpcHost(), config.weaviate().grpcPort()));
-    return WeaviateAuthClient.apiKey(weaviateConfig, config.weaviate().apiKey());
+    return WeaviateAuthClient.apiKey(weaviateConfig, (config.weaviate().apiKey() == null) ? "" : config.weaviate().apiKey());
   }
 }
