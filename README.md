@@ -141,7 +141,8 @@ spec:
 | `application.weaviate.throttle-period` | `1000` | The period (in milliseconds) for which to throttle requests to the Weaviate VectorDB.
 | `application.weaviate.schema.initialize` | `true` | Should this app initialize the schema in the Weaviate VectorDB on startup.
 | `application.weaviate.schema.drop-if-exists` | `false` | Should this app drop the existing schema and recreate in the Weaviate VectorDB on startup.
-| `application.weaviate.schema.name` | "Symbols" | The class name of the schema in the Weaviate VectorDB on startup.
+| `application.weaviate.schema.name` | "Symbols" | The class name of the schema in the Weaviate VectorDB.
+| `application.weaviate.schema.properties` | "see `application.yml` for full list" | The properties for objects in the Weaviate VectorDB.
 | `application.weaviate.schema.vectorizer-module` | "text2vec-ollama" | The name of the vectorizer module to use when creating the schema in the Weaviate VectorDB. For instance "text2vec-ollama" or "text2vec-huggingface".
 | `application.weaviate.schema.vectorizer-module-config` | `apiEndpoint: "http://localhost:11434", model: "all-minilm"` | The vectorizer module configuration map to use when creating the schema in the Weaviate VectorDB.
 | `application.weaviate.schema.generative-module` | "generative-ollama" | The name of the generative module to use when creating the schema in the Weaviate VectorDB. For instance "generative-ollama" or "generative-openai".

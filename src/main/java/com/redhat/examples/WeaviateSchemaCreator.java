@@ -18,9 +18,6 @@ import io.weaviate.client.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.schema.model.Property;
 import io.weaviate.client.v1.schema.model.WeaviateClass;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,64 +29,6 @@ import org.springframework.stereotype.Component;
 public class WeaviateSchemaCreator {
 
   private static final Logger log = LoggerFactory.getLogger(WeaviateSchemaCreator.class);
-
-  public static final Map<String, List<String>> SCHEMA_PROPERTIES;
-
-  static {
-    Map<String, List<String>> properties = new HashMap<>();
-    properties.put("twohundredDayMovingAverage", List.of("text"));
-    properties.put("fiftyDayMovingAverage", List.of("text"));
-    properties.put("fiftytwoWeekLow", List.of("text"));
-    properties.put("fiftytwoWeekHigh", List.of("text"));
-    properties.put("Address", List.of("text"));
-    properties.put("analystRatingBuy", List.of("text"));
-    properties.put("analystRatingHold", List.of("text"));
-    properties.put("analystRatingSell", List.of("text"));
-    properties.put("analystRatingStrongBuy", List.of("text"));
-    properties.put("analystRatingStrongSell", List.of("text"));
-    properties.put("analystTargetPrice", List.of("text"));
-    properties.put("assetType", List.of("text"));
-    properties.put("beta", List.of("text"));
-    properties.put("bookValue", List.of("text"));
-    properties.put("cIK", List.of("text"));
-    properties.put("country", List.of("text"));
-    properties.put("currency", List.of("text"));
-    properties.put("description", List.of("text"));
-    properties.put("dilutedEPSTTM", List.of("text"));
-    properties.put("dividendDate", List.of("text"));
-    properties.put("dividendPerShare", List.of("text"));
-    properties.put("dividendYield", List.of("text"));
-    properties.put("eBITDA", List.of("text"));
-    properties.put("ePS", List.of("text"));
-    properties.put("eVToEBITDA", List.of("text"));
-    properties.put("eVToRevenue", List.of("text"));
-    properties.put("exDividendDate", List.of("text"));
-    properties.put("exchange", List.of("text"));
-    properties.put("fiscalYearEnd", List.of("text"));
-    properties.put("forwardPE", List.of("text"));
-    properties.put("grossProfitTTM", List.of("text"));
-    properties.put("industry", List.of("text"));
-    properties.put("latestQuarter", List.of("text"));
-    properties.put("marketCapitalization", List.of("text"));
-    properties.put("name", List.of("text"));
-    properties.put("operatingMarginTTM", List.of("text"));
-    properties.put("pEGRatio", List.of("text"));
-    properties.put("pERatio", List.of("text"));
-    properties.put("priceToBookRatio", List.of("text"));
-    properties.put("priceToSalesRatioTTM", List.of("text"));
-    properties.put("profitMargin", List.of("text"));
-    properties.put("quarterlyEarningsGrowthYOY", List.of("text"));
-    properties.put("quarterlyRevenueGrowthYOY", List.of("text"));
-    properties.put("returnOnAssetsTTM", List.of("text"));
-    properties.put("returnOnEquityTTM", List.of("text"));
-    properties.put("revenuePerShareTTM", List.of("text"));
-    properties.put("revenueTTM", List.of("text"));
-    properties.put("sector", List.of("text"));
-    properties.put("sharesOutstanding", List.of("text"));
-    properties.put("symbol", List.of("text"));
-    properties.put("trailingPE", List.of("text"));
-    SCHEMA_PROPERTIES = Collections.unmodifiableMap(properties);
-  }
 
   @Autowired
   ApplicationConfiguration config;
@@ -127,10 +66,10 @@ public class WeaviateSchemaCreator {
           WeaviateClass.builder()
             .className(config.weaviate().schema().name())
             .properties(
-              SCHEMA_PROPERTIES.entrySet().stream().map((t) -> {
+              config.weaviate().schema().properties().stream().map((t) -> {
                 return Property.builder()
-                  .name(t.getKey())
-                  .dataType(t.getValue())
+                  .name(t.name())
+                  .dataType(t.dataTypes())
                   .build();
               }).toList()
             )

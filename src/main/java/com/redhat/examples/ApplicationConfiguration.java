@@ -13,6 +13,7 @@
  */
 package com.redhat.examples;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -96,11 +97,17 @@ public record ApplicationConfiguration(
       boolean initialize,
       boolean dropIfExists,
       String name,
+      List<Property> properties,
       String vectorizerModule,
       Map<String, Object> vectorizerModuleConfig,
       String generativeModule,
       Map<String, Object> generativeModuleConfig) {
       
+      public record Property(
+        String name,
+        List<String> dataTypes) {
+        
+      }
     }
   }
 }

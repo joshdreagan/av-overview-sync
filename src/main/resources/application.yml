@@ -57,6 +57,160 @@ application:
       initialize: true
       drop-if-exists: false
       name: "Symbols"
+      properties:
+        - name: "twohundredDayMovingAverage"
+          data-types:
+            - "text"
+        - name: "fiftyDayMovingAverage"
+          data-types:
+            - "text"
+        - name: "fiftytwoWeekLow"
+          data-types:
+            - "text"
+        - name: "fiftytwoWeekHigh"
+          data-types:
+            - "text"
+        - name: "Address"
+          data-types:
+            - "text"
+        - name: "analystRatingBuy"
+          data-types:
+            - "text"
+        - name: "analystRatingHold"
+          data-types:
+            - "text"
+        - name: "analystRatingSell"
+          data-types:
+            - "text"
+        - name: "analystRatingStrongBuy"
+          data-types:
+            - "text"
+        - name: "analystRatingStrongSell"
+          data-types:
+            - "text"
+        - name: "analystTargetPrice"
+          data-types:
+            - "text"
+        - name: "assetType"
+          data-types:
+            - "text"
+        - name: "beta"
+          data-types:
+            - "text"
+        - name: "bookValue"
+          data-types:
+            - "text"
+        - name: "cIK"
+          data-types:
+            - "text"
+        - name: "country"
+          data-types:
+            - "text"
+        - name: "currency"
+          data-types:
+            - "text"
+        - name: "description"
+          data-types:
+            - "text"
+        - name: "dilutedEPSTTM"
+          data-types:
+            - "text"
+        - name: "dividendDate"
+          data-types:
+            - "text"
+        - name: "dividendPerShare"
+          data-types:
+            - "text"
+        - name: "dividendYield"
+          data-types:
+            - "text"
+        - name: "eBITDA"
+          data-types:
+            - "text"
+        - name: "ePS"
+          data-types:
+            - "text"
+        - name: "eVToEBITDA"
+          data-types:
+            - "text"
+        - name: "eVToRevenue"
+          data-types:
+            - "text"
+        - name: "exDividendDate"
+          data-types:
+            - "text"
+        - name: "exchange"
+          data-types:
+            - "text"
+        - name: "fiscalYearEnd"
+          data-types:
+            - "text"
+        - name: "forwardPE"
+          data-types:
+            - "text"
+        - name: "grossProfitTTM"
+          data-types:
+            - "text"
+        - name: "industry"
+          data-types:
+            - "text"
+        - name: "latestQuarter"
+          data-types:
+            - "text"
+        - name: "marketCapitalization"
+          data-types:
+            - "text"
+        - name: "name"
+          data-types:
+            - "text"
+        - name: "operatingMarginTTM"
+          data-types:
+            - "text"
+        - name: "pEGRatio"
+          data-types:
+            - "text"
+        - name: "pERatio"
+          data-types:
+            - "text"
+        - name: "priceToBookRatio"
+          data-types:
+            - "text"
+        - name: "priceToSalesRatioTTM"
+          data-types:
+            - "text"
+        - name: "profitMargin"
+          data-types:
+            - "text"
+        - name: "quarterlyEarningsGrowthYOY"
+          data-types:
+            - "text"
+        - name: "quarterlyRevenueGrowthYOY"
+          data-types:
+            - "text"
+        - name: "returnOnAssetsTTM"
+          data-types:
+            - "text"
+        - name: "returnOnEquityTTM"
+          data-types:
+            - "text"
+        - name: "revenuePerShareTTM"
+          data-types:
+            - "text"
+        - name: "revenueTTM"
+          data-types:
+            - "text"
+        - name: "sector"
+          data-types:
+            - "text"
+        - name: "sharesOutstanding"
+          data-types:
+            - "text"
+        - name: "symbol"
+          data-types:
+            - "text"
+        - name: "trailingPE"
+          data-types:
+            - "text"
       vectorizer-module: "text2vec-ollama"
       vectorizer-module-config:
         apiEndpoint: "http://localhost:11434"
