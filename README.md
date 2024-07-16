@@ -142,8 +142,10 @@ spec:
 | `application.weaviate.schema.initialize` | `true` | Should this app initialize the schema in the Weaviate VectorDB on startup.
 | `application.weaviate.schema.drop-if-exists` | `false` | Should this app drop the existing schema and recreate in the Weaviate VectorDB on startup.
 | `application.weaviate.schema.name` | "Symbols" | The class name of the schema in the Weaviate VectorDB on startup.
-| `application.weaviate.schema.vectorizer` |  | The name of the vectorizer to use when creating the schema in the Weaviate VectorDB. For instance "text2vec-ollama" or "text2vec-huggingface".
-| `application.weaviate.schema.module-config` |  | The module configuration map to use when creating the schema in the Weaviate VectorDB. For instance, { module-config: { text2vec-ollama: { apiEndpoint: "http://localhost:11434", model: "all-minilm" } } }
+| `application.weaviate.schema.vectorizer-module` | "text2vec-ollama" | The name of the vectorizer module to use when creating the schema in the Weaviate VectorDB. For instance "text2vec-ollama" or "text2vec-huggingface".
+| `application.weaviate.schema.vectorizer-module-config` | `apiEndpoint: "http://localhost:11434", model: "all-minilm"` | The vectorizer module configuration map to use when creating the schema in the Weaviate VectorDB.
+| `application.weaviate.schema.generative-module` | "generative-ollama" | The name of the generative module to use when creating the schema in the Weaviate VectorDB. For instance "generative-ollama" or "generative-openai".
+| `application.weaviate.schema.generative-module-config` | `apiEndpoint: "http://localhost:11434", model: "llama3"` | The generative module configuration map to use when creating the schema in the Weaviate VectorDB.
 
 
 
