@@ -46,7 +46,7 @@ cd $PROJECT_ROOT
 mvn -P openshift clean package oc:deploy
 ```
 
-Additional notes:
+__Additional notes:__
 
 You can reference environment variables inside of your ConfigMap. For instance, if you wanted to use the Huggingface or OpenAI vectorizers, you could add the following configurations to your `config.yml` file:
 
