@@ -134,8 +134,13 @@ public class WeaviateSchemaCreator {
                   .build();
               }).toList()
             )
-            .vectorizer(config.weaviate().schema().vectorizer())
-            .moduleConfig(config.weaviate().schema().moduleConfig())
+            .vectorizer(config.weaviate().schema().vectorizerModule())
+            .moduleConfig(
+              Map.of(
+                config.weaviate().schema().vectorizerModule(), config.weaviate().schema().vectorizerModuleConfig(),
+                config.weaviate().schema().generativeModule(), config.weaviate().schema().generativeModuleConfig()
+              )
+            )
             .build()
         )
         .run();

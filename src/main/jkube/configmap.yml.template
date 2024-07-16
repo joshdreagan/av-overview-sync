@@ -11,14 +11,14 @@ data:
         port: 80
         grpc-host: "weaviate-grpc.weaviate"
         grpc-port: 50051
-        headers:
-          "X-OpenAI-Api-key": "${APPLICATION_WEAVIATE_OPENAI_API_KEY}"
-          "X-Huggingface-Api-key": "${APPLICATION_WEAVIATE_HUGGINGFACE_API_KEY}"
         schema:
-          vectorizer: "text2vec-huggingface"
-          module-config:
-            text2vec-huggingface:
-              options:
-                waitForModel: true
-            generative-openai:
-                model: "gpt-4"
+          initialize: true
+          drop-if-exists: false
+          vectorizer-module: "text2vec-ollama"
+          vectorizer-module-config:
+            apiEndpoint: "http://ollama.ollama:11434"
+            model: "all-minilm"
+          generative-module: "generative-ollama"
+          generative-module-config:
+            apiEndpoint: "http://ollama.ollama:11434"
+            model: "llama3"

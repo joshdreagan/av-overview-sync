@@ -96,8 +96,10 @@ public record ApplicationConfiguration(
       boolean initialize,
       boolean dropIfExists,
       String name,
-      String vectorizer,
-      Map<String, Object> moduleConfig) {
+      String vectorizerModule,
+      Map<String, Object> vectorizerModuleConfig,
+      String generativeModule,
+      Map<String, Object> generativeModuleConfig) {
       
     }
   }

@@ -325,6 +325,7 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/maven,java,netbeans,eclipse,intellij,visualstudiocode,windows,osx,linux
 
+src/main/jkube/deployment.yml
 src/main/jkube/configmap.yml
 src/main/jkube/secret.yml
 config/

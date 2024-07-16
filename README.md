@@ -30,19 +30,71 @@ mvn clean package spring-boot:run
 
 ## Running on OpenShift
 
-Create the `configmap.yml` and `secret.yml` files from the available templates, and update them with your values. These files are ignored by Git to prevent checking in personal/user keys or other secrets.
+Create the `deployment.yml, `configmap.yml`, and `secret.yml` files from the available templates, and update them with your values. These files are ignored by Git to prevent checking in personal/user keys or other secrets.
 
 ```
 cd $PROJECT_ROOT
+cp src/main/jkube/deployment.yml.template src/main/jkube/deployment.yml
 cp src/main/jkube/configmap.yml.template src/main/jkube/configmap.yml
 cp src/main/jkube/secret.yml.template src/main/jkube/secret.yml
 ```
 
-Build and deploy to OpenShift.
+Build and deploy to OpenShift. _Make sure you're logged in to OpenShift and are currently in the namespace you want to deploy to._
 
 ```
 cd $PROJECT_ROOT
 mvn -P openshift clean package oc:deploy
+```
+
+Additional notes:
+
+You can reference environment variables inside of your ConfigMap. For instance, if you wanted to use the Huggingface or OpenAI vectorizers, you could add the following configurations to your `config.yml` file:
+
+```
+data:
+  application.yml: |-
+    application:
+      weaviate:
+        headers:
+          "X-OpenAI-Api-key": "${OPENAI_API_KEY}"
+          "X-Huggingface-Api-key": "${HUGGINGFACE_API_KEY}"
+        schema:
+          vectorizer-module: "text2vec-huggingface"
+          vectorizer-module-config:
+            options:
+              waitForModel: true
+          generative-module: "generative-openai"
+          generative-module-config:
+            model: "gpt-4"
+```
+
+Then you can add the API keys to your `secret.yml` file like so:
+
+```
+data:
+  application.weaviate.openai-api-key: "<my base64 encoded key>"
+  application.weaviate.huggingface-api-key: "<my base64 encoded key>"
+```
+
+Finally, you'd inject those secrets in your `deployment.yml` as environment variables which you referenced in your ConfigMap.
+
+```
+spec:
+  template:
+    spec:
+      containers:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${project.artifactId}-secret
+              key: application.weaviate.openai-api-key
+              optional: true
+        - name: HUGGINGFACE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${project.artifactId}-secret
+              key: application.weaviate.huggingface-api-key
+              optional: true
 ```
 
 ## Application Properties
@@ -92,3 +144,6 @@ mvn -P openshift clean package oc:deploy
 | `application.weaviate.schema.name` | "Symbols" | The class name of the schema in the Weaviate VectorDB on startup.
 | `application.weaviate.schema.vectorizer` |  | The name of the vectorizer to use when creating the schema in the Weaviate VectorDB. For instance "text2vec-ollama" or "text2vec-huggingface".
 | `application.weaviate.schema.module-config` |  | The module configuration map to use when creating the schema in the Weaviate VectorDB. For instance, { module-config: { text2vec-ollama: { apiEndpoint: "http://localhost:11434", model: "all-minilm" } } }
+
+
+
