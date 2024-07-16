@@ -30,7 +30,7 @@ mvn clean package spring-boot:run
 
 ## Running on OpenShift
 
-Create the `deployment.yml, `configmap.yml`, and `secret.yml` files from the available templates, and update them with your values. These files are ignored by Git to prevent checking in personal/user keys or other secrets.
+Create the `deployment.yml`, `configmap.yml`, and `secret.yml` files from the available templates, and update them with your values. These files are ignored by Git to prevent checking in personal/user keys or other secrets.
 
 ```
 cd $PROJECT_ROOT
