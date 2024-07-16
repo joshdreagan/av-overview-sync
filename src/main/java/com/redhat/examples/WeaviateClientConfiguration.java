@@ -13,7 +13,6 @@
  */
 package com.redhat.examples;
 
-import java.util.Map;
 import io.weaviate.client.Config;
 import io.weaviate.client.WeaviateAuthClient;
 import io.weaviate.client.WeaviateClient;
@@ -33,9 +32,7 @@ public class WeaviateClientConfiguration {
     Config weaviateConfig = new Config(
       config.weaviate().scheme(),
       String.format("%s:%d", config.weaviate().host(), config.weaviate().port()),
-      Map.of(
-        "X-OpenAI-Api-key", (config.weaviate().openAiApiKey() == null) ? "" : config.weaviate().openAiApiKey(),
-        "X-Huggingface-Api-key", (config.weaviate().huggingfaceApiKey() == null) ? "" : config.weaviate().huggingfaceApiKey())
+      config.weaviate().headers()
     );
     weaviateConfig.setGRPCSecured(config.weaviate().grpcSecured());
     weaviateConfig.setGRPCHost(String.format("%s:%d", config.weaviate().grpcHost(), config.weaviate().grpcPort()));

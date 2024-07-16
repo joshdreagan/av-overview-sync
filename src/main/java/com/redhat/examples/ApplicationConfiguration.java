@@ -13,6 +13,7 @@
  */
 package com.redhat.examples;
 
+import java.util.Map;
 import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -85,12 +86,19 @@ public record ApplicationConfiguration(
     String grpcHost,
     int grpcPort,
     String apiKey,
-    String openAiApiKey,
-    String huggingfaceApiKey,
-    boolean initializeSchema,
+    Map<String, String> headers,
+    Schema schema,
     boolean throttleEnabled,
     long throttleRequests,
     long throttlePeriod) {
 
+    public record Schema(
+      boolean initialize,
+      boolean dropIfExists,
+      String name,
+      String vectorizer,
+      Map<String, Object> moduleConfig) {
+      
+    }
   }
 }

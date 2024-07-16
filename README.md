@@ -83,9 +83,12 @@ mvn -P openshift clean package oc:deploy
 | `application.weaviate.grpc-host` | "localhost" | The host name for gRPC access to the Weaviate VectorDB.
 | `application.weaviate.grpc-port` | `50051` | The port for gRPC access to the Weaviate VectorDB.
 | `application.weaviate.api-key` |  | Your Weavate API key to use for access to the Weaviate VectorDB.
-| `application.weaviate.openai-api-key` |  | Your OpenAI API key to use for the "generative-openai" generative query processor.
-| `application.weaviate.huggingface-api-key` |  | Your Huggingface API key to use for the "text2vec_huggingface" vectorizer.
-| `application.weaviate.initialize-schema` | `true` | Should this app initialize the schema in the Weaviate VectorDB on startup. If enabled, this will create a schema only if one doesn't already exist.
+| `application.weaviate.headers` |  | The headers to include in the connection to the Weaviate VectorDB. For example, "X-OpenAI-Api-key" or "X-Huggingface-Api-key".
 | `application.weaviate.throttle-enabled` | `true` | Should requests to the Weaviate VectorDB be throttled.
 | `application.weaviate.throttle-requests` | `1` | The number of requests per-period allowed to the Weaviate VectorDB.
 | `application.weaviate.throttle-period` | `1000` | The period (in milliseconds) for which to throttle requests to the Weaviate VectorDB.
+| `application.weaviate.schema.initialize` | `true` | Should this app initialize the schema in the Weaviate VectorDB on startup.
+| `application.weaviate.schema.drop-if-exists` | `false` | Should this app drop the existing schema and recreate in the Weaviate VectorDB on startup.
+| `application.weaviate.schema.name` | "Symbols" | The class name of the schema in the Weaviate VectorDB on startup.
+| `application.weaviate.schema.vectorizer` |  | The name of the vectorizer to use when creating the schema in the Weaviate VectorDB. For instance "text2vec-ollama" or "text2vec-huggingface".
+| `application.weaviate.schema.module-config` |  | The module configuration map to use when creating the schema in the Weaviate VectorDB. For instance, { module-config: { text2vec-ollama: { apiEndpoint: "http://localhost:11434", model: "all-minilm" } } }

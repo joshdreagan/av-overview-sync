@@ -11,31 +11,37 @@ spec:
             secretKeyRef:
               name: ${project.artifactId}-secret
               key: application.s3.access-key
+              optional: true
         - name: APPLICATION_S3_SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: ${project.artifactId}-secret
               key: application.s3.secret-key
+              optional: true
         - name: APPLICATION_ALPHA_VANTAGE_API_KEY
           valueFrom:
             secretKeyRef:
               name: ${project.artifactId}-secret
               key: application.alpha-vantage.api-key
+              optional: true
         - name: APPLICATION_WEAVIATE_API_KEY
           valueFrom:
             secretKeyRef:
               name: ${project.artifactId}-secret
               key: application.weaviate.api-key
+              optional: true
         - name: APPLICATION_WEAVIATE_OPENAI_API_KEY
           valueFrom:
             secretKeyRef:
               name: ${project.artifactId}-secret
               key: application.weaviate.openai-api-key
+              optional: true
         - name: APPLICATION_WEAVIATE_HUGGINGFACE_API_KEY
           valueFrom:
             secretKeyRef:
               name: ${project.artifactId}-secret
               key: application.weaviate.huggingface-api-key
+              optional: true
         resources:
           requests:
             cpu: "1.0"

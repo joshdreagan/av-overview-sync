@@ -51,9 +51,22 @@ application:
     grpc-host: "localhost"
     grpc-port: 50051
     api-key: "<api-key>"
-    openai-api-key: "<openai-api-key>"
-    huggingface-api-key: "<huggingface-api-key>"
+    headers:
+      "X-OpenAI-Api-key": "<openai-api-key>"
+      "X-Huggingface-Api-key": "<huggingface-api-key>"
     initialize-schema: true
+    schema:
+      initialize: true
+      drop-if-exists: false
+      name: "Symbols"
+#      vectorizer: "text2vec-ollama"
+#      module-config:
+#        text2vec-ollama: 
+#          apiEndpoint: "http://localhost:11434"
+#          model: "all-minilm"
+#        generative-ollama: 
+#          apiEndpoint: "http://localhost:11434"
+#          model: "llama3"
     throttle-enabled: true
     throttle-requests: 1
     throttle-period: 1000

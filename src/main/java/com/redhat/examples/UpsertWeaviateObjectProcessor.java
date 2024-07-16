@@ -31,6 +31,9 @@ public class UpsertWeaviateObjectProcessor implements Processor {
   private static final Logger log = LoggerFactory.getLogger(UpsertWeaviateObjectProcessor.class);
 
   @Autowired
+  ApplicationConfiguration config;
+  
+  @Autowired
   WeaviateClient weaviateClient;
 
   @Override
@@ -39,7 +42,7 @@ public class UpsertWeaviateObjectProcessor implements Processor {
     Map<String, Object> properties = exchange.getIn().getBody(Map.class);
 
     log.debug("Querying objects: id='{}'", id);
-    Result<List<WeaviateObject>> getObjectResult = weaviateClient.data().objectsGetter().withClassName(WeaviateSchemaCreator.CLASS_NAME).withID(id).run();
+    Result<List<WeaviateObject>> getObjectResult = weaviateClient.data().objectsGetter().withClassName(config.weaviate().schema().name()).withID(id).run();
     if (getObjectResult.hasErrors()) {
       throw new RuntimeException(getObjectResult.getError().toString());
     }
@@ -47,7 +50,7 @@ public class UpsertWeaviateObjectProcessor implements Processor {
 
     if (getObjectResult.getResult() == null || getObjectResult.getResult().size() == 0) {
       log.debug("Creating object: id='{}', properties='{}'", id, properties);
-      Result<WeaviateObject> insertObjectResult = weaviateClient.data().creator().withClassName(WeaviateSchemaCreator.CLASS_NAME).withID(id).withProperties(properties).run();
+      Result<WeaviateObject> insertObjectResult = weaviateClient.data().creator().withClassName(config.weaviate().schema().name()).withID(id).withProperties(properties).run();
       if (insertObjectResult.hasErrors()) {
         throw new RuntimeException(insertObjectResult.getError().toString());
       }
@@ -55,7 +58,7 @@ public class UpsertWeaviateObjectProcessor implements Processor {
     } else if (getObjectResult.getResult().size() == 1) {
       if (!properties.equals(getObjectResult.getResult().get(0).getProperties())) {
         log.debug("Updating object: id='{}', properties='{}'", id, properties);
-        Result<Boolean> updateObjectResult = weaviateClient.data().updater().withClassName(WeaviateSchemaCreator.CLASS_NAME).withID(id).withProperties(properties).run();
+        Result<Boolean> updateObjectResult = weaviateClient.data().updater().withClassName(config.weaviate().schema().name()).withID(id).withProperties(properties).run();
         if (updateObjectResult.hasErrors()) {
           throw new RuntimeException(updateObjectResult.getError().toString());
         }

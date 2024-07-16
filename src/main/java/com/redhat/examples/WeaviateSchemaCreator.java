@@ -33,7 +33,6 @@ public class WeaviateSchemaCreator {
 
   private static final Logger log = LoggerFactory.getLogger(WeaviateSchemaCreator.class);
 
-  public static final String CLASS_NAME = "Symbols";
   public static final Map<String, List<String>> SCHEMA_PROPERTIES;
 
   static {
@@ -93,20 +92,40 @@ public class WeaviateSchemaCreator {
   }
 
   @Autowired
+  ApplicationConfiguration config;
+  
+  @Autowired
   WeaviateClient weaviateClient;
 
   @EventListener(ApplicationReadyEvent.class)
   void initWeaviateSchema() {
-    Result<Boolean> classExistsResult = weaviateClient.schema().exists().withClassName(CLASS_NAME).run();
+    log.debug("Initializing schema: name='{}'", config.weaviate().schema().name());
+    if (!config.weaviate().schema().initialize()) {
+      log.debug("Skipping schema initialization: name='{}'", config.weaviate().schema().name());
+      return;
+    }
+    
+    Result<Boolean> classExistsResult = weaviateClient.schema().exists().withClassName(config.weaviate().schema().name()).run();
     if (classExistsResult.hasErrors()) {
       throw new RuntimeException(classExistsResult.getError().toString());
     }
+    
+    boolean shouldCreate = !classExistsResult.getResult() || config.weaviate().schema().dropIfExists();
+    
+    if (config.weaviate().schema().dropIfExists()) {
+      log.debug("Dropping existing schema: name='{}'", config.weaviate().schema().name());
+      Result<Boolean> schemaDeleteResult = weaviateClient.schema().classDeleter().withClassName(config.weaviate().schema().name()).run();
+      if (schemaDeleteResult.hasErrors()) {
+        throw new RuntimeException(schemaDeleteResult.getError().toString());
+      }
+    }
 
-    if (!classExistsResult.getResult()) {
+    if (shouldCreate) {
+      log.debug("Creating schema: name='{}'", config.weaviate().schema().name());
       Result<Boolean> schemaCreateResult = weaviateClient.schema().classCreator()
         .withClass(
           WeaviateClass.builder()
-            .className(CLASS_NAME)
+            .className(config.weaviate().schema().name())
             .properties(
               SCHEMA_PROPERTIES.entrySet().stream().map((t) -> {
                 return Property.builder()
@@ -115,16 +134,8 @@ public class WeaviateSchemaCreator {
                   .build();
               }).toList()
             )
-            .vectorizer("text2vec-huggingface")
-            .moduleConfig(
-              Map.of(
-                "text2vec-huggingface", Map.of(
-                  "options", Map.of(
-                    "waitForModel", true
-                  )
-                )
-              )
-            )
+            .vectorizer(config.weaviate().schema().vectorizer())
+            .moduleConfig(config.weaviate().schema().moduleConfig())
             .build()
         )
         .run();
