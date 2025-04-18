@@ -21,4 +21,4 @@ data:
           generative-module: "generative-ollama"
           generative-module-config:
             apiEndpoint: "http://ollama.ollama:80"
-            model: "granite3-dense:8b"
+            model: "granite3.3:latest"
